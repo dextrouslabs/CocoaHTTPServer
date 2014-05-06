@@ -34,6 +34,10 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 @synthesize name,value,params;
 
 - (id) initWithData:(NSData *)data contentEncoding:(NSStringEncoding)encoding {
+    if( nil == (self = [super init]) ) {
+        return self;
+    }
+
 	params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
 	char* bytes = (char*)data.bytes;
@@ -163,8 +167,10 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 			HTTPLogWarn(@"MultipartFormDataParser: param %@ mentioned more then once in one header",currentParam);
 		}
 #endif
-		[params setObject:paramValue forKey:currentParam];
-		HTTPLogVerbose(@"MultipartFormDataParser: header param: %@ = %@",currentParam,paramValue);
+		if (paramValue != nil) {
+            [params setObject:paramValue forKey:currentParam];
+            HTTPLogVerbose(@"MultipartFormDataParser: header param: %@ = %@",currentParam,paramValue);
+        }
 		currentParam = nil;
 	}
 	
